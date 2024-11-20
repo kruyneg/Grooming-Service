@@ -1,0 +1,1 @@
+dbconnection: "postgresql://user:password@localhost:5433/dogs-db?sslmode=disable"
