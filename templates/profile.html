@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profile</title>
+    <link rel="stylesheet" href="/static/styles.css">
+</head>
+
+<body>
+    <header>
+        <h1>User Profile</h1>
+        <nav>
+            <a href="/">Home</a>
+            <a href="/appointments">Appointments</a>
+            <a href="/profile">Profile</a>
+            <a href="/create-appointment">Create New Appointment</a>
+        </nav>
+    </header>
+
+    <main class="container">
+        <!-- User Info Section -->
+        <form id="saveForm">
+            <div class="form-group">
+                <label for="name">First Name:</label>
+                <input type="text" id="name" name="name" value="{{ .Name }}" required>
+            </div>
+            <div class="form-group">
+                <label for="surname">Last Name:</label>
+                <input type="text" id="surname" name="surname" value="{{ .Surname }}" required>
+            </div>
+            <div class="form-group">
+                <label for="midname">Middle Name:</label>
+                <input type="text" id="midname" name="midname"
+                    value="{{if .Midname.Valid }}{{ .Midname.String }}{{end}}">
+            </div>
+            <div class="form-group">
+                <label for="phone">Phone Number:</label>
+                <input type="tel" id="phone" name="phone" value="{{ .Phone }}" required>
+            </div>
+            <div class="form-group">
+                <label for="email">Email:</label>
+                <input type="email" id="email" name="email" value="{{ .Email }}" required>
+            </div>
+            <button type="button" class="btn" onclick="submitSaveForm()">Save Changes</button>
+        </form>
+
+        <script>
+            async function submitSaveForm() {
+                // Получаем форму
+                const form = document.getElementById('saveForm');
+
+                // Собираем данные формы
+                const formData = new FormData(form);
+
+                // Преобразуем данные в формат application/x-www-form-urlencoded
+                const formBody = new URLSearchParams(formData).toString();
+
+                try {
+                    // Отправляем запрос с методом PUT
+                    const response = await fetch('/profile/save', {
+                        method: 'PUT',
+                        headers: {
+                            'Content-Type': 'application/x-www-form-urlencoded'
+                        },
+                        body: formBody
+                    });
+
+                    if (response.ok) {
+                        // Если запрос успешен, обработка ответа
+                        alert('Profile updated successfully!');
+                        location.reload(); // Перезагружаем страницу (по желанию)
+                    } else {
+                        // Обработка ошибок
+                        const errorText = await response.text();
+                        alert(`Error: ${errorText}`);
+                    }
+                } catch (error) {
+                    console.error('Request failed', error);
+                    alert('An error occurred. Please try again.');
+                }
+            }
+        </script>
+
+        <!-- Pets Section -->
+        <section class="profile-section">
+            <h2>Your Pets</h2>
+            <table class="pets-table">
+                <thead>
+                    <tr>
+                        <th>Nickname</th>
+                        <th>Breed</th>
+                        <th>Type</th>
+                        <th>Delete Button</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {{ range .Pets }}
+                    <tr>
+                        <td>{{ .Name }}</td>
+                        <td>{{ .Breed }}</td>
+                        <td>{{ .Animal }}</td>
+                        <td>
+                            <!-- Кнопка для удаления питомца -->
+                            <form id="deleteForm-{{ .Id }}" style="display:inline;">
+                                <input type="hidden" name="petID" value="{{ .Id }}">
+                                <button type="button" class="btn delete-btn"
+                                    onclick="submitDeleteForm('{{ .Id }}')">Delete</button>
+                            </form>
+
+                            <script>
+                                async function submitDeleteForm(petID) {
+                                    try {
+                                        // Убедитесь, что petID передается как строка
+                                        const response = await fetch('/profile/pet', {
+                                            method: 'DELETE',
+                                            headers: {
+                                                'Content-Type': 'application/json'
+                                            },
+                                            body: JSON.stringify({ petID: petID }) // передаем строку
+                                        });
+
+                                        if (response.ok) {
+                                            // Если запрос успешен
+                                            alert('Pet deleted successfully!');
+                                            location.reload(); // Обновляем страницу
+                                        } else {
+                                            // Если сервер вернул ошибку
+                                            const errorText = await response.text();
+                                            alert(`Error: ${errorText}`);
+                                        }
+                                    } catch (error) {
+                                        console.error('Request failed', error);
+                                        alert('An error occurred. Please try again.');
+                                    }
+                                }
+                            </script>
+                        </td>
+                    </tr>
+                    {{ else }}
+                    <tr>
+                        <td colspan="4">No pets found. Add your pets to see them here.</td>
+                    </tr>
+                    {{ end }}
+                </tbody>
+            </table>
+
+            <!-- Form to Add New Pet -->
+            <h3>Add a New Pet</h3>
+            <form action="/profile/pet" method="POST">
+                <div class="form-group">
+                    <label for="pet-name">Pet Name:</label>
+                    <input type="text" id="pet-name" name="petName" placeholder="Enter pet name" required>
+                </div>
+                <div class="form-group">
+                    <label for="pet-breed">Breed:</label>
+                    <input type="text" id="pet-breed" name="petBreed" placeholder="Enter breed" required>
+                </div>
+                <div class="form-group">
+                    <label for="pet-animal">Type:</label>
+                    <select id="pet-animal" name="petAnimal" required>
+                        <option value="Dog">Dog</option>
+                        <option value="Cat">Cat</option>
+                        <option value="Rabbit">Rabbit</option>
+                        <option value="Bird">Bird</option>
+                        <option value="Other">Other</option>
+                    </select>
+                </div>
+                <button type="submit" class="btn">Add Pet</button>
+            </form>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2024 Grooming Salon</p>
+    </footer>
+</body>
+
+</html>

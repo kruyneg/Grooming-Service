@@ -1,0 +1,20 @@
+version: "2.3"
+
+services:
+    postgres:
+        container_name: service-postgres
+        image: postgres:12
+        environment: &db_env
+          POSTGRES_DB: dogs-db
+          POSTGRES_USER: user
+          POSTGRES_PASSWORD: password
+        ports:
+          - 5433:5432
+        volumes:
+          - ./postgresql:/docker-entrypoint-initdb.d
+        networks:
+          - postgres
+
+networks:
+    postgres:
+        driver: bridge

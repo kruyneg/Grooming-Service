@@ -31,8 +31,8 @@ func Load() (conf *Config) {
 	conf = &Config{
 		Env: "dev",
 		Port: 8080,
-		TemplatesPath: "/templates",
-		StaticPath: "/static",
+		TemplatesPath: "templates/",
+		StaticPath: "static/",
 	}
 
 	if err = yaml.NewDecoder(cfgFile).Decode(&conf); err != nil {

@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Book an Appointment</title>
+    <link rel="stylesheet" href="/static/styles.css">
+</head>
+
+<body>
+    <header>
+        <h1>Book an Appointment</h1>
+        <nav>
+            <a href="/">Home</a>
+            <a href="/profile">Profile</a>
+            <a href="/appointments">Appointments</a>
+            <a href="/create-appointment">Create New Appointment</a>
+
+        </nav>
+    </header>
+
+    <main class="container">
+        <form action="/create-appointment" method="POST">
+            <!-- Выбор услуги -->
+            <div class="form-group">
+                <label for="service">Service:</label>
+                <select id="service" name="serviceID" required>
+                    {{ range .Services }}
+                    <option value="{{ .Id }}" data-duration="{{ .Duration }}">
+                        {{ .Type }} - ${{ printf "%.2f" .Price }} ({{ .Duration }} hours)
+                    </option>
+                    {{ end }}
+                </select>
+            </div>
+            <!-- Выбор места и работника -->
+            <div class="form-group">
+                <label for="salon_master">Salon and Groomer:</label>
+                <select id="salon_master" name="salonMasterID" required>
+                    {{ range .SalonMasters }}
+                    <option value="{{ .Id }}">
+                        {{ .Name }} - {{ .Address }}
+                    </option>
+                    {{ end }}
+                </select>
+            </div>
+
+            <!-- Выбор питомца -->
+            <div class="form-group">
+                <label for="pet">Pet:</label>
+                <select id="pet" name="petID" required>
+                    {{ range .Pets }}
+                    <option value="{{ .Id }}">
+                        {{ .Name }} ({{ .Breed }})
+                    </option>
+                    {{ end }}
+                </select>
+            </div>
+
+            <!-- Выбор даты -->
+            <div class="form-group">
+                <label for="appointment-date">Date:</label>
+                <input type="date" id="appointment-date" name="date" required onchange="fetchAvailableTimes()">
+            </div>
+
+            <!-- Таблица доступных временных слотов -->
+            <div class="form-group">
+                <label>Available Times:</label>
+                <table id="available-times-table">
+                    <thead>
+                        <tr>
+                            <th>Time Slot</th>
+                            <th>Select</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- Временные слоты будут добавляться сюда -->
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Скрытое поле для выбранного времени -->
+            <input type="hidden" id="appointment-time" name="time" required>
+
+            <script>
+                // Функция для загрузки доступных временных слотов
+                async function fetchAvailableTimes() {
+                    console.log("Step into fetchAvailableTimes");
+                    const dateInput = document.getElementById('appointment-date');
+                    const serviceSelect = document.getElementById('service');
+                    const salonMaster = document.getElementById('salon_master');
+
+                    const date = dateInput.value;
+                    const duration = serviceSelect.selectedOptions[0].getAttribute("data-duration"); // Получаем ID выбранной услуги
+                    const salonMasterId = salonMaster.value;
+
+                    if (!date || !duration || !salonMasterId) {
+                        console.log(`date=${date}&duration=${duration}&salonMasterId=${salonMasterId}`)
+                        return;
+                    }
+
+                    console.log("I'm trying");
+
+                    try {
+                        const response = await fetch(
+                            `/create-appointment/available-times?date=${date}&duration=${duration}&salonMasterId=${salonMasterId}`);
+                        if (response.ok) {
+                            const availableTimes = await response.json(); // Ожидаем массив строк времени
+                            populateAvailableTimes(availableTimes);
+                        } else {
+                            console.error('Failed to fetch available times');
+                            alert('Unable to fetch available times. Please try again later.');
+                        }
+                    } catch (error) {
+                        console.error('Error fetching times:', error);
+                        alert('An error occurred while fetching available times.');
+                    }
+                }
+
+                // Функция для заполнения таблицы временных слотов
+                function populateAvailableTimes(times) {
+                    const tableBody = document.querySelector('#available-times-table tbody');
+                    tableBody.innerHTML = ''; // Очищаем таблицу перед заполнением
+
+                    if (times.length > 0) {
+                        times.forEach(time => {
+                            const row = document.createElement('tr');
+
+                            const timeCell = document.createElement('td');
+                            timeCell.textContent = time;
+
+                            const selectCell = document.createElement('td');
+                            const selectButton = document.createElement('button');
+                            selectButton.textContent = 'Select';
+                            selectButton.className = 'btn select-btn';
+                            selectButton.onclick = () => selectTime(time);
+                            selectCell.appendChild(selectButton);
+
+                            row.appendChild(timeCell);
+                            row.appendChild(selectCell);
+                            tableBody.appendChild(row);
+                        });
+                    } else {
+                        const row = document.createElement('tr');
+                        const cell = document.createElement('td');
+                        cell.colSpan = 2;
+                        cell.textContent = 'No available times for this date.';
+                        row.appendChild(cell);
+                        tableBody.appendChild(row);
+                    }
+                }
+
+                // Функция для выбора времениDuration
+                function selectTime(time) {
+                    document.getElementById('appointment-time').value = time; // Устанавливаем выбранное время
+                    alert(`Selected time: ${time}`);
+                }
+            </script>
+        </form>
+    </main>
+
+    <footer>
+        <p>&copy; 2024 Grooming Salon</p>
+    </footer>
+</body>
+
+</html>

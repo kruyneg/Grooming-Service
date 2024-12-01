@@ -14,13 +14,13 @@ type responseWriterWrapper struct {
 
 func (w *responseWriterWrapper) WriteHeader(code int) {
 	w.statusCode = code
-	w.WriteHeader(code)
+	w.ResponseWriter.WriteHeader(code)
 }
 
 func LogRequest(logger *slog.Logger) mux.MiddlewareFunc {
 	return func(h http.Handler) http.Handler {
 		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-			logger.Info("Get request",
+			logger.Info("Request",
 				slog.String("url", r.URL.Path),
 				slog.String("Method", r.Method))
 
@@ -32,7 +32,7 @@ func LogRequest(logger *slog.Logger) mux.MiddlewareFunc {
 					slog.Int("Code", wrappedWriter.statusCode))
 			}()
 
-			h.ServeHTTP(w, r)
+			h.ServeHTTP(&wrappedWriter, r)
 		})
 	}
 }

@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home</title>
+    <link rel="stylesheet" href="/static/styles.css">
+</head>
+
+<body>
+    <header>
+        <h1>Welcome to Our Grooming Salon</h1>
+        <nav>
+            <a href="/create-appointment">Create Appointment</a>
+            <a href="/appointments">Appointments</a>
+            <a href="/profile">Profile</a>
+        </nav>
+    </header>
+
+    <main class="container">
+        <!-- Таблица услуг -->
+        <section>
+            <h2>Our Services</h2>
+            <table class="styled-table">
+                <thead>
+                    <tr>
+                        <th>Service</th>
+                        <th>Price</th>
+                        <th>Duration</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {{ range .Services }}
+                    <tr>
+                        <td>{{ .Type }}</td>
+                        <td>${{ printf "%.2f" .Price }}</td>
+                        <td>{{ .Duration }} hours</td>
+                    </tr>
+                    {{ end }}
+                </tbody>
+            </table>
+        </section>
+
+        <!-- Список грумеров -->
+        <section>
+            <h2>Our Groomers</h2>
+            <ul class="groomer-list">
+                {{ range .Groomers }}
+                <li class="groomer-item">
+                    <h3>{{ .Name }}</h3>
+                    <p class="groomer-description">
+                        {{ if .Description.Valid }} {{ .Description.String }} {{ end }}
+                    </p>
+                    <ul class="address-list">
+                        {{ range .Salons }}
+                        <li>
+                            <span>{{ .Address }}</span>
+                            | <span>{{ .Phone }}</span>
+                        </li>
+                        {{ end }}
+                    </ul>
+                </li>
+                <hr>
+                {{ end }}
+            </ul>
+        </section>
+
+    </main>
+
+    <footer>
+        <p>&copy; 2024 Grooming Salon</p>
+    </footer>
+</body>
+
+</html>

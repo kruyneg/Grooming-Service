@@ -1,1 +1,7 @@
+env: dev
+port: 8080
+
+templates-path: "/home/kruyneg/Programming/DB_Labs/templates/"
+static-path: "/home/kruyneg/Programming/DB_Labs/static"
+
 dbconnection: "postgresql://user:password@localhost:5433/dogs-db?sslmode=disable"

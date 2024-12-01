@@ -3,7 +3,9 @@ package main
 import (
 	"dog-service/config"
 	"dog-service/logging"
-	"dog-service/middleware"
+	"dog-service/server/middleware"
+	"dog-service/routes"
+	"dog-service/storage"
 	"fmt"
 	"net/http"
 
@@ -13,16 +15,28 @@ import (
 func main() {
 	conf := config.Load()
 	fmt.Println(conf)
-	
+
 	log := logging.Setup(conf.Env, conf.LogPath)
 	log.Info("Go, go, Gophers!")
 
-	router := mux.NewRouter()
-	router.HandleFunc("/ping", func(w http.ResponseWriter, r *http.Request) {
-		fmt.Fprintln(w, "pong")
-	})
+	db, err := storage.New(conf.DBConnection)
+	if err != nil {
+		log.Error(fmt.Sprintf("%s", err))
+		return
+	}
+	log.Info("Connected to database")
+	defer db.Close()
 
+	router := mux.NewRouter()
 	router.Use(middleware.LogRequest(log))
 
-	http.ListenAndServe(fmt.Sprintf(":%d", conf.Port), router)
+	routes.SetupRoutes(
+		router,
+		conf.TemplatesPath,
+		conf.StaticPath,
+		log,
+		&db)
+
+	fmt.Println(http.ListenAndServe(fmt.Sprintf(":%d", conf.Port), router))
+	fmt.Println("End of Program")
 }

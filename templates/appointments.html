@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<style>
+    body {
+        background-color: red;
+    }
+</style>
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Appointments</title>
+    <link rel="stylesheet" href="/static/styles.css">
+</head>
+
+<body>
+    <header>
+        <h1>Appointments</h1>
+        <nav>
+            <a href="/">Home</a>
+            <a href="/appointments">Appointments</a>
+            <a href="/profile">Profile</a>
+            <a href="/create-appointment">Create New Appointment</a>
+        </nav>
+    </header>
+
+    <main>
+        <section>
+            <h2>Your Appointments</h2>
+            {{ if . }}
+            <table>
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Status</th>
+                        <th>Time</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {{ range $index, $appointment := . }}
+                    <tr>
+                        <td>{{ $index }}</td>
+                        <td>{{ $appointment.Status }}</td>
+                        <td>{{ $appointment.Time }}</td>
+                    </tr>
+                    {{ end }}
+                </tbody>
+            </table>
+            {{ else }}
+            <p>No appointments found.</p>
+            {{ end }}
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2024 Grooming Salon</p>
+    </footer>
+</body>
+
+</html>
