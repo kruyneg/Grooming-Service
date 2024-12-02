@@ -10,9 +10,10 @@ func (s *AppointmentStorage) GetTime(date time.Time, id int64) ([]struct {
 	Duration int
 }, error) {
 	rows, err := s.db.Query(`
-		SELECT time, duration
+		SELECT appointments.time, services.duration
 		FROM appointments
-		WHERE salon_master_id = $1
+			JOIN services ON services.id = appointments.service_id
+		WHERE salon_master_id = $1 AND
 			DATE_PART('year', time) = $2 AND
 			DATE_PART('month', time) = $3 AND
 			DATE_PART('day', time) = $4

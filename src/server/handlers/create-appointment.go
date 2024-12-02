@@ -49,8 +49,8 @@ func NewCreateAppointment(tmplPath string, logger *slog.Logger, storage CreateAp
 			r.ParseForm()
 			var res models.Appointment
 
-			res.ServiceId, _ = strconv.ParseInt(r.FormValue("serviceID"), 10, 64)
-			res.PetId, _ = strconv.ParseInt(r.FormValue("petID"), 10, 64)
+			res.Service.Id, _ = strconv.ParseInt(r.FormValue("serviceID"), 10, 64)
+			res.Pet.Id, _ = strconv.ParseInt(r.FormValue("petID"), 10, 64)
 			datePart, _ := time.Parse("2006-01-02", r.FormValue("date")) // Парсим дату
 			timePart, _ := time.Parse("15:04", r.FormValue("time"))      // Парсим время
 			res.Time = time.Date(
@@ -63,8 +63,10 @@ func NewCreateAppointment(tmplPath string, logger *slog.Logger, storage CreateAp
 				0,                   // Наносекунды
 				timePart.Location(), // Локация (часовой пояс)
 			)
-			res.SalonMasterId, _ = strconv.ParseInt(r.FormValue("salonMasterID"), 10, 64)
+			res.SalonMaster.Id, _ = strconv.ParseInt(r.FormValue("salonMasterID"), 10, 64)
 			res.Status = "created"
+
+			logger.Debug(fmt.Sprintf("Appointment: %v", res))
 
 			_, err := storage.SaveAppointment(res)
 			if err != nil {

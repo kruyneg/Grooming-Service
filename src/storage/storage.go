@@ -3,6 +3,7 @@ package storage
 import (
 	"database/sql"
 	appointmentStorage "dog-service/storage/appointment-storage"
+	reviewstorage "dog-service/storage/review-storage"
 	salonGroomerStorage "dog-service/storage/salon-groomer-storage"
 	serviceStorage "dog-service/storage/service-storage"
 	userStorage "dog-service/storage/user-storage"
@@ -16,6 +17,7 @@ type Storage struct {
 	salonGroomerStorage.SalonGroomerStorage
 	userStorage.UserStorage
 	serviceStorage.ServiceStorage
+	reviewstorage.ReviewStorage
 }
 
 func New(connstr string) (Storage, error) {
@@ -31,6 +33,7 @@ func New(connstr string) (Storage, error) {
 		SalonGroomerStorage: salonGroomerStorage.New(db),
 		UserStorage: userStorage.New(db),
 		ServiceStorage: serviceStorage.New(db),
+		ReviewStorage: reviewstorage.New(db),
 	}, nil
 }
 

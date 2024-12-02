@@ -13,8 +13,8 @@ func (s *AppointmentStorage) SaveAppointment(
 			(pet_id, service_id, time, salon_master_id, status)
 		VALUES
 			($1, $2, $3, $4, $5)
-	`, appointment.PetId, appointment.ServiceId,
-	appointment.Time, appointment.SalonMasterId, appointment.Status)
+	`, appointment.Pet.Id, appointment.Service.Id,
+	appointment.Time, appointment.SalonMaster.Id, appointment.Status)
 	if err != nil {
 		return 0,
 			fmt.Errorf("error while save appointment: %s", err)

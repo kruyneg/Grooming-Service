@@ -34,6 +34,10 @@
                         <th>#</th>
                         <th>Status</th>
                         <th>Time</th>
+                        <th>Pet</th>
+                        <th>Groomer</th>
+                        <th>Service</th>
+                        <th>Write Review</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -42,6 +46,16 @@
                         <td>{{ $index }}</td>
                         <td>{{ $appointment.Status }}</td>
                         <td>{{ $appointment.Time }}</td>
+                        <td>{{ $appointment.Pet.Name }} ({{ $appointment.Pet.Breed}})</td>
+                        <td>{{ $appointment.SalonMaster.Name }} ({{ $appointment.SalonMaster.Address }})</td>
+                        <td>{{ $appointment.Service.Type }}</td>
+                        <td>
+                            <!-- Кнопка для перехода на страницу создания отзыва -->
+                            <form action="/create-review" method="GET">
+                                <input type="hidden" name="aid" value="{{ $appointment.Id }}">
+                                <button type="submit" class="btn btn-primary">Review</button>
+                            </form>
+                        </td>
                     </tr>
                     {{ end }}
                 </tbody>

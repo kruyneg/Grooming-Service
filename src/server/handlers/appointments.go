@@ -9,7 +9,7 @@ import (
 )
 
 type AppointmentGetter interface {
-	GetAppointments() ([]models.Appointment, error)
+	GetAppointments(int64) ([]models.Appointment, error)
 }
 
 func NewAppointments(tmplPath string, logger *slog.Logger, getter AppointmentGetter) http.HandlerFunc {
@@ -22,7 +22,7 @@ func NewAppointments(tmplPath string, logger *slog.Logger, getter AppointmentGet
 	return func(w http.ResponseWriter, r *http.Request) {
 
 		// Данные, которые можно передать в шаблон
-		data, err := getter.GetAppointments()
+		data, err := getter.GetAppointments(1)
 		if err != nil {
 			logger.Error(fmt.Sprintf("%s", err), slog.String("where", where))
 			http.Error(w, "Database Reading Error", http.StatusInternalServerError)

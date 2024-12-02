@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reviews</title>
+    <link rel="stylesheet" href="/static/styles.css">
+</head>
+
+<body>
+    <header>
+        <h1>Customer Reviews</h1>
+        <nav>
+            <a href="/">Home</a>
+            <a href="/create-appointment">Create Appointment</a>
+            <a href="/appointments">Appointments</a>
+        </nav>
+    </header>
+
+    <main class="container">
+        <section>
+            <ul class="review-list">
+                {{ range . }}
+                <li class="review-item">
+                    <div class="review-header">
+                        <span class="host-name">{{ .Host.Name }} {{ .Host.Surname }}</span>
+                        <span class="salon-groomer">{{ .SalonMaster.Address }} - {{ .SalonMaster.Name }}</span>
+                    </div>
+                    <div class="review-score">
+                        {{ range $i, $v := makeRange .Score }}
+                        <span class="star">&#9733;</span>
+                        {{ end }}
+                        {{ range $i, $v := makeRange (sub 5 .Score) }}
+                        <span class="star-empty">&#9734;</span>
+                        {{ end }}
+                    </div>
+                    <p class="review-text">{{ .Content }}</p>
+                    <hr>
+                </li>
+                {{ end }}
+            </ul>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2024 Grooming Salon</p>
+    </footer>
+</body>
+
+</html>
