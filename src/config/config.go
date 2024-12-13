@@ -15,6 +15,7 @@ type Config struct {
 	Port int `yaml:"port"`
 	TemplatesPath string `yaml:"templates-path"`
 	StaticPath string `yaml:"static-path"`
+	AdminPassword string `yaml:"admin-password"`
 }
 
 func Load() (conf *Config) {
@@ -33,6 +34,7 @@ func Load() (conf *Config) {
 		Port: 8080,
 		TemplatesPath: "templates/",
 		StaticPath: "static/",
+		AdminPassword: "admin",
 	}
 
 	if err = yaml.NewDecoder(cfgFile).Decode(&conf); err != nil {

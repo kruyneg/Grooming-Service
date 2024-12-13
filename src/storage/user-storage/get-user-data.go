@@ -6,7 +6,7 @@ import (
 	"github.com/lib/pq"
 )
 
-func (s *UserStorage) GetUserData() (models.UserData, error) {
+func (s *UserStorage) GetUserData(id int64) (models.UserData, error) {
 	row := s.db.QueryRow(
 		`SELECT
 			host.name, host.surname, host.midname,
@@ -17,9 +17,9 @@ func (s *UserStorage) GetUserData() (models.UserData, error) {
 			array_agg(coalesce(pets.animal_type, '')) as animal_types
 		FROM host LEFT JOIN pets
 			ON pets.host_id = host.id
-		WHERE host.id = 1
+		WHERE host.id = $1
 		GROUP BY host.id
-	`)
+	`, id)
 
 	var (
 		res          models.UserData

@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create New Employee</title>
+    <link rel="stylesheet" href="/static/styles.css">
+</head>
+
+<body>
+    <header>
+        <h1>Create New Employee</h1>
+        <nav>
+            <a href="/">Home</a>
+            <a href="/a/add-groomer">Add Groomer</a>
+            <a href="/a/add-service">Add Service</a>
+            <a href="/logout">Logout</a>
+        </nav>
+    </header>
+    <div class="container">
+        <h1>New Employee Form</h1>
+        <form method="POST" action="/a/add-groomer">
+            <label for="username">Username:</label>
+            <input type="text" id="username" name="username" placeholder="Enter username" required>
+
+            <label for="password">Password:</label>
+            <input type="password" id="password" name="password" placeholder="Enter password" required>
+
+            <label for="name">Full Name:</label>
+            <input type="text" id="name" name="name" placeholder="Enter full name" required>
+
+            <label for="surname">Surname:</label>
+            <input type="text" id="surname" name="surname" placeholder="Enter full surname" required>
+
+            <label for="description">Description:</label>
+            <textarea id="description" name="description" placeholder="Enter description" rows="4"></textarea>
+
+            <!-- <label for="salons">Assign to Salons:</label>
+            <select id="salons" name="salons" multiple required>
+                {{ range . }}
+                <option value="{{ .Id }}">{{ .Address }}</option>
+                {{ end }}
+            </select> -->
+            <label>Assign to Salons:</label>
+            <div id="salons" class="checkbox-container">
+                {{ range . }}
+                <label>
+                    <input type="checkbox" name="salons[]" value="{{ .Id }}">
+                    {{ .Address }}
+                </label>
+                {{ end }}
+            </div>
+
+
+            <button type="submit" class="btn">Create Employee</button>
+        </form>
+    </div>
+    <footer>
+        <p>&copy; 2024 Grooming Salon Management. All rights reserved.</p>
+    </footer>
+</body>
+
+</html>

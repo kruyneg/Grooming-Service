@@ -1,7 +1,7 @@
 package models
 
 type Salon struct {
-	Id string
+	Id int64
 	Address string
 	Phone string
 }

@@ -6,16 +6,50 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Home</title>
     <link rel="stylesheet" href="/static/styles.css">
+    <style>
+        body {
+            background-image: url('/static/images/background.png');
+            background-repeat: no-repeat;
+            /* Запрет повторения */
+            background-size: cover;
+            /* Подгонка изображения под размер экрана */
+            background-position: center;
+            /* Центрирование изображения */
+
+        }
+    </style>
 </head>
 
 <body>
     <header>
         <h1>Welcome to Our Grooming Salon</h1>
         <nav>
-            <a href="/create-appointment">Create Appointment</a>
-            <a href="/appointments">Appointments</a>
-            <a href="/profile">Profile</a>
+
+            {{if eq .Role "user"}}
+            <a href="/">Home</a>
+            <a href="/reviews">Reviews</a>
+            <a href="/u/appointments">Appointments</a>
+            <a href="/u/profile">Profile</a>
+            <a href="/u/create-appointment">Create New Appointment</a>
+            <a href="/logout">Logout</a>
+            {{else if eq .Role "employee"}}
+            <a href="/">Home</a>
+            <a href="/e/appointments">Appointments</a>
+            <a href="/logout">Logout</a>
+            {{else if eq .Role "admin"}}
+            <a href="/">Home</a>
+            <a href="/a/add-groomer">Add Groomer</a>
+            <a href="/a/add-service">Add Service</a>
+            <a href="/logout">Logout</a>
+            {{else}}
+            <a href="/">Home</a>
+            <a href="/reviews">Reviews</a>
+            <a href="/u/appointments">Appointments</a>
+            <a href="/u/profile">Profile</a>
+            <a href="/u/create-appointment">Create New Appointment</a>
+            {{end}}
         </nav>
+
     </header>
 
     <main class="container">
@@ -34,7 +68,7 @@
                     {{ range .Services }}
                     <tr>
                         <td>{{ .Type }}</td>
-                        <td>${{ printf "%.2f" .Price }}</td>
+                        <td>{{ printf "%.2f" .Price }} руб.</td>
                         <td>{{ .Duration }} hours</td>
                     </tr>
                     {{ end }}

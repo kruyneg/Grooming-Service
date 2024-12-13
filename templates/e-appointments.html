@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Employee Appointments</title>
+    <link rel="stylesheet" href="/static/styles.css">
+    <style>
+        /* Дополнительные стили для кнопок изменения статуса */
+        .status-btn {
+            background-color: #0044cc;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        .status-btn:hover {
+            background-color: #003399;
+        }
+
+        .status-select {
+            padding: 5px;
+            border-radius: 4px;
+            border: 1px solid #ccc;
+            background-color: #8897d4;
+            color: #333;
+        }
+
+        .status-select:focus {
+            border-color: #0044cc;
+            background-color: #fff;
+            outline: none;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Employee Appointments</h1>
+        <nav>
+            <a href="/">Home</a>
+            <a href="/e/appointments">Appointments</a>
+            <a href="/logout">Logout</a>
+        </nav>
+    </header>
+
+    <div class="container">
+        <h2>Your Appointments</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>Time</th>
+                    <th>Pet</th>
+                    <th>Service</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            {{ if . }}
+            <tbody>
+                <!-- Example appointment rows -->
+                 {{ range . }}
+                <tr>
+                    <td>{{ .Time }}</td>
+                    <td>{{ .Pet.Name }} ({{ .Pet.Breed }})</td>
+                    <td>{{ .Service.Type }}</td>
+                    <td>
+                        <form method="POST" action="/e/appointments?aid={{ .Id }}">
+                            <select name="status" class="status-select">
+                                <option value="created" {{if eq .Status "created" }} selected{{end}}>created</option>
+                                <option value="completed" {{if eq .Status "completed" }} selected{{end}}>completed</option>
+                                <option value="cancelled" {{if eq .Status "cancelled" }} selected{{end}}>cancelled</option>
+                            </select>
+                    </td>
+                    <td>
+                        <button type="submit" class="status-btn">Update</button>
+                        </form>
+                    </td>
+                </tr>
+                {{ end }}
+            </tbody>
+            {{ else }}
+            <p>No appointments found.</p>
+            {{ end }}
+        </table>
+    </div>
+
+    <footer class="footer">
+        <p>&copy; 2024 Grooming Salon. All rights reserved.</p>
+    </footer>
+</body>
+</html>

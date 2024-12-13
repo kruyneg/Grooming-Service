@@ -1,10 +1,10 @@
 /* Общие стили */
 body {
-    /* background-image: url('/static/images/background3.webp'); /*Путь к вашему изображению */
-    /* background-size:30%; /* Масштабирование изображения */
-    /* background-repeat:repeat; /* Запрет на повторение */
-    /* background-attachment: fixed; /* Фиксированный фон */
-    /* background-position: center; /* Центрирование изображения*/
+    /* background-image: url('/static/images/background (1).png');
+    background-repeat: no-repeat; 
+    background-size: cover;
+    background-position: center;
+    */
     font-family: Arial, sans-serif;
     margin: 0;
     padding: 0;
@@ -12,6 +12,17 @@ body {
     /* Тёмный фон */
     color: #f0f0f0;
     /* Светлый текст */
+}
+
+.container {
+    width: 100%;
+    max-width: 800px;
+    /* Ограничиваем ширину */
+    margin: 0 auto;
+    /* Центрируем контейнер */
+    padding: 20px;
+    box-sizing: border-box;
+    text-align: center;
 }
 
 header {
@@ -24,9 +35,16 @@ header {
     align-items: center;
 }
 
+
 header h1 {
-    margin: 0;
-    font-size: 1.5rem;
+    margin-left: 10%;
+}
+
+.container h1 {
+    margin: 0 auto 20px;
+    /* Центрирование и отступ снизу */
+    font-size: 2rem;
+    color: #87cefa;
 }
 
 header nav a {
@@ -41,127 +59,56 @@ header nav a:hover {
     /* Светло-синий при наведении */
 }
 
-main {
-    padding: 2rem;
-}
 
 h2 {
     color: #87cefa;
     /* Акцентный светло-синий цвет */
 }
 
-table {
-    width: 100%;
-    border-collapse: collapse;
-    margin-top: 1rem;
-    background-color: #1e3a5f;
-    color: #ffffff;
-}
-
-table th,
-table td {
-    border: 1px solid #ffffff;
-    padding: 0.5rem 1rem;
-    text-align: left;
-}
-
-table th {
-    background-color: #234567;
-    /* Тёмно-синий акцент */
-    font-weight: bold;
-}
-
-table tr:nth-child(even) {
-    background-color: #2a4a6f;
-    /* Чередующийся синий */
-}
-
-table tr:hover {
-    background-color: #87cefa;
-    /* Светло-синий при наведении */
-    color: #000;
-}
-
-footer {
-    text-align: center;
-    padding: 1rem;
-    background-color: #1e3a5f;
-    color: #ffffff;
-    position: relative; /* Убирает перекрытие контента */
-    width: 100%; /* Убедитесь, что ширина точно соответствует экрану */
-    box-sizing: border-box; /* Включает padding в ширину */
-    box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.1); /* Добавляет тень для красоты */
-}
-
-/* Адаптивность */
-@media (max-width: 768px) {
-    body {
-        font-size: 0.9rem;
-    }
-
-    table th,
-    table td {
-        padding: 0.5rem;
-    }
-}
-
-/* Для страницы profile */
-
-/* Секции профиля */
-.profile-section {
-    margin-bottom: 30px;
-}
-
-.profile-section h2 {
-    color: #0044cc;
-    margin-bottom: 10px;
-}
-
-.profile-section h3 {
-    color: #0044cc;
-    margin-bottom: 10px;
-}
-
-/* Формы */
-/* Контейнер для формы */
-/* Контейнер для формы */
+/* Стили для форм */
 form {
     display: flex;
     flex-direction: column;
-    align-items: flex-start; /* Выравнивание по началу блока */
-    justify-content: flex-start;
-    width: 100%;
-    max-width: 600px; /* Ограничение ширины формы */
-    margin: 0 auto; /* Центрируем форму по горизонтали */
+    gap: 15px;
+    background-color: #1e3a5f;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    max-width: 500px;
+    margin: 0 auto;
 }
 
-/* Поля ввода */
 input,
 select {
-    width: 33%; /* Устанавливаем ширину в треть экрана */
-    max-width: 400px; /* Ограничиваем максимальную ширину */
-    min-width: 200px; /* Ограничиваем минимальную ширину */
+    width: 33%;
+    /* Устанавливаем ширину в треть экрана */
+    max-width: 400px;
+    /* Ограничиваем максимальную ширину */
+    min-width: 200px;
+    /* Ограничиваем минимальную ширину */
     padding: 8px;
-    border: 1px solid #ccc; /* Цвет границы */
+    border: 1px solid #ccc;
+    /* Цвет границы */
     border-radius: 4px;
-    box-sizing: border-box; /* Включаем padding в расчёт ширины */
-    margin-bottom: 15px; /* Отступ между полями ввода */
-    background-color: #8897d4; /* Светло-серый фон */
-    color: #333; /* Тёмный текст для контраста */
+    box-sizing: border-box;
+    /* Включаем padding в расчёт ширины */
+    margin-bottom: 15px;
+    /* Отступ между полями ввода */
+    background-color: #8897d4;
+    /* Светло-серый фон */
+    color: #333;
+    /* Тёмный текст для контраста */
 }
 
-/* Убираем контраст при фокусе */
 input:focus,
 select:focus {
-    border-color: #0044cc; /* Изменение цвета границы при фокусе */
-    background-color: #fff; /* Белый фон при фокусе для выделения */
-    outline: none; /* Убираем стандартный контур при фокусе */
-    box-shadow: 0 0 5px rgba(0, 68, 204, 0.5); /* Лёгкая тень для фокуса */
+    border-color: #0044cc;
+    background-color: #fff;
+    outline: none;
+    box-shadow: 0 0 5px rgba(0, 68, 204, 0.5);
 }
 
-/* Для кнопок */
 button.btn {
-    width: auto; /* Кнопки остаются шириной по содержимому */
     padding: 10px 20px;
     background-color: #0044cc;
     color: white;
@@ -169,7 +116,7 @@ button.btn {
     border-radius: 4px;
     cursor: pointer;
     font-size: 16px;
-    margin-top: 10px; /* Отступ сверху для кнопок */
+    align-self: center;
 }
 
 button.btn:hover {
@@ -209,54 +156,88 @@ nav a:hover {
     text-decoration: underline;
 }
 
-.container {
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 20px;
+
+form p {
+    color: #f0f0f0;
+    margin-top: 10px;
+    text-align: center;
 }
 
-/* Эти, ну списки сотрудников */
-.groomer-list {
-    list-style: none;
-    padding: 0;
-    margin: 0;
+form p a {
+    color: #87cefa;
+    text-decoration: none;
 }
 
-.groomer-item {
-    margin-bottom: 20px;
+form p a:hover {
+    text-decoration: underline;
 }
 
-.groomer-description {
-    margin-top: 5px;
-    font-size: 0.9rem;
-    color:#666;
+/* Стили для таблиц */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 1rem;
+    background-color: #1e3a5f;
+    color: #ffffff;
 }
 
-.address-list {
-    list-style: none;
-    padding: 0;
-    margin: 10px 0 0 0;
+table th,
+table td {
+    border: 1px solid #ffffff;
+    padding: 0.5rem 1rem;
+    text-align: left;
 }
 
-.address-list li {
-    font-size: 0.9rem;
+table th {
+    background-color: #234567;
+    font-weight: bold;
+}
+
+table tr:nth-child(even) {
+    background-color: #2a4a6f;
+}
+
+table tr:hover {
+    background-color: #87cefa;
+    color: #000;
+}
+
+/* Стили для футера */
+footer {
+    text-align: center;
+    padding: 1rem;
+    background-color: #1e3a5f;
+    color: #ffffff;
+    width: 100%;
+    box-sizing: border-box;
+    box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.1);
+}
+
+/* Центрирование футера */
+.footer {
+    text-align: center;
+    margin-top: 20px;
+    font-size: 14px;
     color: #666;
-    margin-bottom: 5px;
 }
 
-hr {
-    border: 0;
-    border-top: 1px solid #ccc;
-    margin: 15px 0;
+.footer a {
+    color: #87cefa;
+    text-decoration: none;
 }
 
-/* Для страницы reviews */
-.review-list {
+.footer a:hover {
+    text-decoration: underline;
+}
+
+/* Стили для списков */
+ul {
     list-style: none;
     padding: 0;
     margin: 0;
 }
 
+.groomer-item,
 .review-item {
     margin-bottom: 20px;
     padding: 10px;
@@ -264,6 +245,13 @@ hr {
     border: 1px solid #ccc;
     border-radius: 5px;
 }
+
+.groomer-description {
+    margin-top: 5px;
+    font-size: 0.9rem;
+    color: #666;
+}
+
 
 .review-header {
     display: flex;
@@ -274,28 +262,118 @@ hr {
     color: #fff;
 }
 
-.review-header span {
-    margin-right: 10px;
-}
-
 .review-text {
     font-size: 1rem;
     color: #ccc;
 }
 
-/* CSS для звёздочек*/
-.review-score {
-    margin: 10px 0;
-}
-
+/* Стили для звёзд */
 .star {
     color: gold;
     font-size: 1.2rem;
-    margin-right: 2px;
 }
 
 .star-empty {
     color: #ccc;
-    font-size: 1.2rem;
-    margin-right: 2px;
+}
+
+/* Адаптивность */
+@media (max-width: 768px) {
+    body {
+        font-size: 0.9rem;
+    }
+
+    table th,
+    table td {
+        padding: 0.5rem;
+    }
+}
+
+/* for checkbox */
+/* Стили для чекбоксов */
+.checkbox-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+    margin-bottom: 20px;
+}
+
+.checkbox-container label {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background-color: #1e3a5f;
+    /* Тёмно-синий фон */
+    border: 1px solid #234567;
+    /* Тонкая граница */
+    border-radius: 5px;
+    padding: 10px 15px;
+    cursor: pointer;
+    transition: background-color 0.3s, box-shadow 0.3s;
+    color: #f0f0f0;
+    /* Светлый текст */
+}
+
+.checkbox-container input[type="checkbox"] {
+    appearance: none;
+    /* Сбрасываем стандартный вид */
+    width: 20px !important;
+    /* Принудительно задаём ширину */
+    height: 20px !important;
+    /* Принудительно задаём высоту */
+    display: inline-block;
+    /* Указываем, что это блочный элемент */
+    border: 2px solid #87cefa;
+    /* Светло-синий цвет границы */
+    border-radius: 3px;
+    /* Округление */
+    background-color: #1e3a5f;
+    /* Тёмный фон */
+    margin: 0;
+    /* Убираем лишние отступы */
+    padding: 0;
+    /* Убираем padding */
+    box-sizing: border-box;
+    /* Включаем границы в расчёт размеров */
+    outline: none;
+    /* Убираем обводку при фокусе */
+    cursor: pointer;
+    /* Указатель на чекбоксе */
+    flex-shrink: 0;
+    /* Запрещаем сжимание в контейнере */
+    position: relative;
+    /* Для псевдоэлемента галочки */
+}
+
+.checkbox-container input[type="checkbox"]:checked {
+    background-color: #87cefa;
+    /* Цвет заливки при выборе */
+    border-color: #87cefa;
+    /* Граница при выборе */
+}
+
+.checkbox-container input[type="checkbox"]:checked::before {
+    content: "✓";
+    /* Галочка */
+    color: #121212;
+    /* Контрастный цвет */
+    font-size: 14px;
+    /* Размер галочки */
+    font-weight: bold;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    /* Заполняем чекбокс */
+    height: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+}
+
+.checkbox-container label:hover {
+    background-color: #2a4a6f;
+    /* Более светлый оттенок при наведении */
+    box-shadow: 0 0 5px rgba(135, 206, 250, 0.5);
+    /* Мягкое свечение */
 }

@@ -1,9 +1,9 @@
 package main
 
 import (
+	"dog-service/auth"
 	"dog-service/config"
 	"dog-service/logging"
-	"dog-service/server/middleware"
 	"dog-service/routes"
 	"dog-service/storage"
 	"fmt"
@@ -27,8 +27,9 @@ func main() {
 	log.Info("Connected to database")
 	defer db.Close()
 
+	db.SaveLoginPassword(0, "admin", conf.AdminPassword, auth.RoleAdmin)
+
 	router := mux.NewRouter()
-	router.Use(middleware.LogRequest(log))
 
 	routes.SetupRoutes(
 		router,

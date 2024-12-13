@@ -3,6 +3,7 @@ package storage
 import (
 	"database/sql"
 	appointmentStorage "dog-service/storage/appointment-storage"
+	authstorage "dog-service/storage/auth-storage"
 	reviewstorage "dog-service/storage/review-storage"
 	salonGroomerStorage "dog-service/storage/salon-groomer-storage"
 	serviceStorage "dog-service/storage/service-storage"
@@ -18,6 +19,7 @@ type Storage struct {
 	userStorage.UserStorage
 	serviceStorage.ServiceStorage
 	reviewstorage.ReviewStorage
+	authstorage.AuthStorage
 }
 
 func New(connstr string) (Storage, error) {
@@ -29,11 +31,12 @@ func New(connstr string) (Storage, error) {
 	// 	return Storage{db}, fmt.Errorf("Error while ping database: %s", err)
 	// }
 	return Storage{
-		AppointmentStorage: appointmentStorage.New(db),
+		AppointmentStorage:  appointmentStorage.New(db),
 		SalonGroomerStorage: salonGroomerStorage.New(db),
-		UserStorage: userStorage.New(db),
-		ServiceStorage: serviceStorage.New(db),
-		ReviewStorage: reviewstorage.New(db),
+		UserStorage:         userStorage.New(db),
+		ServiceStorage:      serviceStorage.New(db),
+		ReviewStorage:       reviewstorage.New(db),
+		AuthStorage:         authstorage.New(db),
 	}, nil
 }
 

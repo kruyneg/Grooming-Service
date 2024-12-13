@@ -65,6 +65,12 @@ CREATE TABLE "review"(
 );
 ALTER TABLE
     "review" ADD PRIMARY KEY("id");
+CREATE TABLE "auth"(
+    "user_id" BIGINT NOT NULL,
+    "login" TEXT UNIQUE NOT NULL,
+    "password_hash" TEXT NOT NULL,
+    "role" TEXT NOT NULL
+);
 ALTER TABLE
     "appointments" ADD CONSTRAINT "appointments_service_id_foreign" FOREIGN KEY("service_id") REFERENCES "services"("id") ON DELETE CASCADE;
 ALTER TABLE
@@ -81,31 +87,22 @@ ALTER TABLE
     "pets" ADD CONSTRAINT "pets_host_id_foreign" FOREIGN KEY("host_id") REFERENCES "host"("id") ON DELETE CASCADE;
 
 
-INSERT INTO host (name, surname, phone_number, email)VALUES('user', 'userov', '+71234567890', 'email@mail.ru')
 
-INSERT INTO services (type, price, duration) VALUES ('стрижка', 1000, 1), ('стирка', 500, 1), ('и то, и другое', 1499.9, 2)
-
-INSERT INTO groomers (name, surname)
-VALUES
-('Галя', 'Собачкова'),
-('Жанна', 'Котейкова')
+INSERT INTO services (type, price, duration) VALUES ('стрижка', 1000, 1), ('стирка', 500, 1), ('и то, и другое', 1499.9, 2);
 
 INSERT INTO salons (address, phone_number) VALUES
-('г. Москва', '+70987654321')
+('г. Москва', '+70987654321'),
+('г. Санкт-Петербург', '+71234567890');
 
-INSERT INTO salon_masters (salon_id, groomer_id) VALUES 
-(1, 1),
-(1, 2)
+-- CREATE OR REPLACE FUNCTION update_last_update_column()
+-- RETURNS TRIGGER AS $$
+-- BEGIN
+--     NEW.last_update := NOW();
+--     RETURN NEW;
+-- END;
+-- $$ LANGUAGE plpgsql;
 
--- SELECT groomers.*, salons.*
--- FROM groomers JOIN 
---     salon_masters ON groomers.id = salon_masters.groomer_id JOIN
---     salons ON salon_masters.salon_id = salons.id
-
-SELECT * FROM salon_masters
-
-INSERT INTO appointments (pet_id, service_id, time, salon_master_id, status)
-VALUES
-(1, 1, '2024-11-28 13:00', 1, 'created'),
-(1, 1, '2024-11-28 15:00', 2, 'created')
-
+-- CREATE TRIGGER set_last_update
+-- BEFORE UPDATE ON appointments
+-- FOR EACH ROW
+-- EXECUTE FUNCTION update_last_update_column();

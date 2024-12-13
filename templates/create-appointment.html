@@ -13,22 +13,23 @@
         <h1>Book an Appointment</h1>
         <nav>
             <a href="/">Home</a>
-            <a href="/profile">Profile</a>
-            <a href="/appointments">Appointments</a>
-            <a href="/create-appointment">Create New Appointment</a>
-
+            <a href="/reviews">Reviews</a>
+            <a href="/u/appointments">Appointments</a>
+            <a href="/u/profile">Profile</a>
+            <a href="/u/create-appointment">Create New Appointment</a>
+            <a href="/logout">Logout</a>
         </nav>
     </header>
 
     <main class="container">
-        <form action="/create-appointment" method="POST">
+        <form action="/u/create-appointment" method="POST">
             <!-- Выбор услуги -->
             <div class="form-group">
                 <label for="service">Service:</label>
                 <select id="service" name="serviceID" required>
                     {{ range .Services }}
                     <option value="{{ .Id }}" data-duration="{{ .Duration }}">
-                        {{ .Type }} - ${{ printf "%.2f" .Price }} ({{ .Duration }} hours)
+                        {{ .Type }} - {{ printf "%.2f" .Price }} руб. ({{ .Duration }} hours)
                     </option>
                     {{ end }}
                 </select>
@@ -95,7 +96,7 @@
                     const salonMasterId = salonMaster.value;
 
                     if (!date || !duration || !salonMasterId) {
-                        console.log(`date=${date}&duration=${duration}&salonMasterId=${salonMasterId}`)
+                        console.log(`date=${date}&duration=${duration}&salonMasterId=${salonMasterId}`);
                         return;
                     }
 
@@ -103,7 +104,7 @@
 
                     try {
                         const response = await fetch(
-                            `/create-appointment/available-times?date=${date}&duration=${duration}&salonMasterId=${salonMasterId}`);
+                            `/u/create-appointment/available-times?date=${date}&duration=${duration}&salonMasterId=${salonMasterId}`);
                         if (response.ok) {
                             const availableTimes = await response.json(); // Ожидаем массив строк времени
                             populateAvailableTimes(availableTimes);

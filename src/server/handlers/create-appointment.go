@@ -1,6 +1,8 @@
 package handlers
 
 import (
+	"bytes"
+	"dog-service/auth"
 	"dog-service/models"
 	"encoding/json"
 	"fmt"
@@ -45,6 +47,7 @@ func NewCreateAppointment(tmplPath string, logger *slog.Logger, storage CreateAp
 		logger.Error("Cannot parse create-appointment.html", slog.String("where", where), slog.String("What", err.Error()))
 	}
 	return func(w http.ResponseWriter, r *http.Request) {
+		userId := auth.GetId(r)
 		if r.Method == http.MethodPost {
 			r.ParseForm()
 			var res models.Appointment
@@ -74,7 +77,7 @@ func NewCreateAppointment(tmplPath string, logger *slog.Logger, storage CreateAp
 				http.Error(w, "Database Reading Error", http.StatusInternalServerError)
 				return
 			}
-			http.Redirect(w, r, "/appointments", http.StatusSeeOther)
+			http.Redirect(w, r, "/u/appointments", http.StatusSeeOther)
 			return
 		}
 
@@ -85,7 +88,7 @@ func NewCreateAppointment(tmplPath string, logger *slog.Logger, storage CreateAp
 			salonMasters []models.SalonMaster
 			err          error
 		)
-		user, err = storage.GetUserData()
+		user, err = storage.GetUserData(userId)
 		if err != nil {
 			logger.Error(fmt.Sprintf("%s", err), slog.String("where", where))
 			http.Error(w, "Database Reading Error", http.StatusInternalServerError)
@@ -178,16 +181,17 @@ func NewAvailableTime(logger *slog.Logger, db TimeGetter) http.HandlerFunc {
 			startTime = 19
 		}
 
-		var res []string
+		var res = []string{}
 		for i, j := startTime, startTime; j <= 18; i++ {
-			j = min(i, j)
+			j = max(i, j)
 			if occupied[i] {
 				continue
 			}
-			for j <= 18 && j-i+1 < int(duration) && !occupied[j] {
+			for j <= 18 && j-i < int(duration) && !occupied[j] {
 				j++
 			}
-			if i-j+1 == int(duration) && !occupied[j] {
+			occup, ok := occupied[j]
+			if j-i == int(duration) && (!ok || !occup) {
 				res = append(res, fmt.Sprintf("%02d:00", i))
 			}
 		}
@@ -196,8 +200,14 @@ func NewAvailableTime(logger *slog.Logger, db TimeGetter) http.HandlerFunc {
 		// 		res = append(res, fmt.Sprintf("%02d:00", i))
 		// 	}
 		// }
+		var buf bytes.Buffer
+		json.NewEncoder(&buf).Encode(res)
+		logger.Debug(fmt.Sprintf("%v", buf.String()))
+
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(http.StatusOK)
-		json.NewEncoder(w).Encode(res)
+		if err = json.NewEncoder(w).Encode(res); err != nil {
+			logger.Error("json error!", slog.String("error", err.Error()))
+		}
 	}
 }

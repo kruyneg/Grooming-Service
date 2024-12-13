@@ -1,6 +1,7 @@
 package handlers
 
 import (
+	"dog-service/auth"
 	"dog-service/models"
 	"fmt"
 	"html/template"
@@ -9,11 +10,12 @@ import (
 )
 
 type AppointmentGetter interface {
-	GetAppointments(int64) ([]models.Appointment, error)
+	GetUAppointments(int64) ([]models.Appointment, error)
+	GetEAppointments(int64) ([]models.Appointment, error)
 }
 
-func NewAppointments(tmplPath string, logger *slog.Logger, getter AppointmentGetter) http.HandlerFunc {
-	where := "handlers.appointments.NewAppointments"
+func NewUAppointments(tmplPath string, logger *slog.Logger, getter AppointmentGetter) http.HandlerFunc {
+	where := "handlers.appointments.NewUAppointments"
 
 	tmpl, err := template.ParseFiles(tmplPath + "appointments.html")
 	if err != nil {
@@ -21,8 +23,9 @@ func NewAppointments(tmplPath string, logger *slog.Logger, getter AppointmentGet
 	}
 	return func(w http.ResponseWriter, r *http.Request) {
 
+		userId := auth.GetId(r)
 		// Данные, которые можно передать в шаблон
-		data, err := getter.GetAppointments(1)
+		data, err := getter.GetUAppointments(userId)
 		if err != nil {
 			logger.Error(fmt.Sprintf("%s", err), slog.String("where", where))
 			http.Error(w, "Database Reading Error", http.StatusInternalServerError)

@@ -14,8 +14,8 @@ func (s *UserStorage) SetUserData(data models.UserData) error {
 			midname=$3,
 			phone_number=$4,
 			email=$5
-		WHERE id = 1
-	`, data.Name, data.Surname, data.Midname, data.Phone, data.Email)
+		WHERE id = $6
+	`, data.Name, data.Surname, data.Midname, data.Phone, data.Email, data.Id)
 	if err != nil {
 		return fmt.Errorf("error while update user data: %s", err)
 	}

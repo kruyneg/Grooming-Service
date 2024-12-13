@@ -1,1 +1,9 @@
 .vscode/
+
+logs/INSERT INTO auth (user_id, login, password_hash, role)
+VALUES (
+    'user_id:bigint',
+    'login:text',
+    'password_hash:text',
+    'employee'
+  );

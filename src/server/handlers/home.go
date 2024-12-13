@@ -1,8 +1,9 @@
 package handlers
 
 import (
-	"fmt"
+	"dog-service/auth"
 	"dog-service/models"
+	"fmt"
 	"html/template"
 	"log/slog"
 	"net/http"
@@ -35,7 +36,12 @@ func NewHome(tmplPath string, logger *slog.Logger, getter HomeStorage) http.Hand
 		var data = struct {
 			Services []models.Service
 			Groomers []models.Groomer
-		}{}
+			Role string
+		}{Role: "none"}
+
+		if auth.Check(r) {
+			data.Role = auth.GetRole(r)
+		}
 		var err error
 
 		data.Services, err = getter.GetServices()

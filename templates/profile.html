@@ -13,9 +13,11 @@
         <h1>User Profile</h1>
         <nav>
             <a href="/">Home</a>
-            <a href="/appointments">Appointments</a>
-            <a href="/profile">Profile</a>
-            <a href="/create-appointment">Create New Appointment</a>
+            <a href="/reviews">Reviews</a>
+            <a href="/u/appointments">Appointments</a>
+            <a href="/u/profile">Profile</a>
+            <a href="/u/create-appointment">Create New Appointment</a>
+            <a href="/logout">Logout</a>
         </nav>
     </header>
 
@@ -41,7 +43,7 @@
             </div>
             <div class="form-group">
                 <label for="email">Email:</label>
-                <input type="email" id="email" name="email" value="{{ .Email }}" required>
+                <input type="email" id="email" name="email" value="{{ if .Email.Valid }}{{ .Email.String }}{{ end }}" required>
             </div>
             <button type="button" class="btn" onclick="submitSaveForm()">Save Changes</button>
         </form>
@@ -59,7 +61,7 @@
 
                 try {
                     // Отправляем запрос с методом PUT
-                    const response = await fetch('/profile/save', {
+                    const response = await fetch('/u/profile/save', {
                         method: 'PUT',
                         headers: {
                             'Content-Type': 'application/x-www-form-urlencoded'
@@ -113,7 +115,7 @@
                                 async function submitDeleteForm(petID) {
                                     try {
                                         // Убедитесь, что petID передается как строка
-                                        const response = await fetch('/profile/pet', {
+                                        const response = await fetch('/u/profile/pet', {
                                             method: 'DELETE',
                                             headers: {
                                                 'Content-Type': 'application/json'
@@ -148,7 +150,7 @@
 
             <!-- Form to Add New Pet -->
             <h3>Add a New Pet</h3>
-            <form action="/profile/pet" method="POST">
+            <form action="/u/profile/pet" method="POST">
                 <div class="form-group">
                     <label for="pet-name">Pet Name:</label>
                     <input type="text" id="pet-name" name="petName" placeholder="Enter pet name" required>

@@ -1,6 +1,7 @@
 package handlers
 
 import (
+	"dog-service/auth"
 	"dog-service/models"
 	"encoding/json"
 	"fmt"
@@ -11,14 +12,14 @@ import (
 )
 
 type UserDataGetter interface {
-	GetUserData() (models.UserData, error)
+	GetUserData(int64) (models.UserData, error)
 }
 type UserDataSetter interface {
 	SetUserData(models.UserData) error
 }
 type PetStorage interface {
 	DeletePet(int64) error
-	SavePet(models.Pet) (int64, error)
+	SavePet(int64, models.Pet) (int64, error)
 }
 
 func NewProfile(tmplPath string, logger *slog.Logger, getter UserDataGetter) http.HandlerFunc {
@@ -29,9 +30,10 @@ func NewProfile(tmplPath string, logger *slog.Logger, getter UserDataGetter) htt
 		logger.Error("Cannot parse profile.html", slog.String("where", where), slog.String("What", err.Error()))
 	}
 	return func(w http.ResponseWriter, r *http.Request) {
+		userId := auth.GetId(r)
 
 		// Данные, которые можно передать в шаблон
-		data, err := getter.GetUserData()
+		data, err := getter.GetUserData(userId)
 		if err != nil {
 			logger.Error(fmt.Sprintf("%s", err), slog.String("where", where))
 			http.Error(w, "Database Reading Error", http.StatusInternalServerError)
@@ -53,6 +55,8 @@ func NewProfileSaver(logger *slog.Logger, saver UserDataSetter) http.HandlerFunc
 	where := "handlers.profile.NewProfileSaver"
 
 	return func(w http.ResponseWriter, r *http.Request) {
+		userId := auth.GetId(r)
+
 		if r.Method == http.MethodPut {
 			r.ParseForm()
 
@@ -60,11 +64,15 @@ func NewProfileSaver(logger *slog.Logger, saver UserDataSetter) http.HandlerFunc
 				Name:    r.FormValue("name"),
 				Surname: r.FormValue("surname"),
 				Phone:   r.FormValue("phone"),
-				Email:   r.FormValue("email"),
+				Id:      userId,
 			}
 			if r.FormValue("midname") != "" {
 				user.Midname.String = r.FormValue("midname")
 				user.Midname.Valid = true
+			}
+			if r.FormValue("email") != "" {
+				user.Email.String = r.FormValue("email")
+				user.Email.Valid = true
 			}
 
 			if err := saver.SetUserData(user); err != nil {
@@ -76,7 +84,7 @@ func NewProfileSaver(logger *slog.Logger, saver UserDataSetter) http.HandlerFunc
 		}
 
 		// Переадресуем пользователя на страницу профиля с успешным сообщением
-		http.Redirect(w, r, "/profile", http.StatusSeeOther)
+		http.Redirect(w, r, "/u/profile", http.StatusSeeOther)
 	}
 }
 
@@ -84,6 +92,8 @@ func NewPetHandler(logger *slog.Logger, storage PetStorage) http.HandlerFunc {
 	where := "handlers.profile.NewPetHandler"
 
 	return func(w http.ResponseWriter, r *http.Request) {
+		userId := auth.GetId(r)
+
 		logger.Debug("Step into /profile/pet")
 		if r.Method == http.MethodPost {
 			r.ParseForm()
@@ -93,7 +103,7 @@ func NewPetHandler(logger *slog.Logger, storage PetStorage) http.HandlerFunc {
 				Breed:  r.FormValue("petBreed"),
 				Animal: r.FormValue("petAnimal"),
 			}
-			id, err := storage.SavePet(pet)
+			id, err := storage.SavePet(userId, pet)
 			if err != nil {
 				logger.Error("Error while save pet", slog.String("error", err.Error()), slog.String("where", where))
 				http.Error(w, "Save Error", http.StatusInternalServerError)
@@ -121,6 +131,6 @@ func NewPetHandler(logger *slog.Logger, storage PetStorage) http.HandlerFunc {
 		}
 
 		// Переадресуем пользователя на страницу профиля с успешным сообщением
-		http.Redirect(w, r, "/profile", http.StatusSeeOther)
+		http.Redirect(w, r, "/u/profile", http.StatusSeeOther)
 	}
 }

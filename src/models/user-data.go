@@ -3,9 +3,11 @@ package models
 import "database/sql"
 
 type UserData struct {
+	Id int64
 	Name, Surname string
 	Midname sql.NullString
-	Phone, Email string
+	Phone string
+	Email sql.NullString
 	Pets []Pet
 }
 
