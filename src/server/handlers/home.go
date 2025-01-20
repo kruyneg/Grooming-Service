@@ -31,7 +31,6 @@ func NewHome(tmplPath string, logger *slog.Logger, getter HomeStorage) http.Hand
 		logger.Error("Cannot parse home.html", slog.String("where", where), slog.String("What", err.Error()))
 	}
 	return func(w http.ResponseWriter, r *http.Request) {
-
 		// Данные, которые можно передать в шаблон
 		var data = struct {
 			Services []models.Service

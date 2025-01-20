@@ -32,7 +32,8 @@ CREATE TABLE "appointments"(
     "time" TIMESTAMP(0) WITHOUT TIME ZONE NOT NULL,
     "salon_master_id" BIGINT NOT NULL,
     "review_id" BIGINT NULL,
-    "status" VARCHAR(255) NOT NULL
+    "status" VARCHAR(255) NOT NULL,
+    "last_update" TIMESTAMP
 );
 ALTER TABLE
     "appointments" ADD PRIMARY KEY("id");
@@ -88,21 +89,21 @@ ALTER TABLE
 
 
 
-INSERT INTO services (type, price, duration) VALUES ('стрижка', 1000, 1), ('стирка', 500, 1), ('и то, и другое', 1499.9, 2);
+INSERT INTO services (type, price, duration) VALUES ('стрижка', 1000, 1), ('мытьё', 500, 1), ('и то, и другое', 1499.9, 2);
 
 INSERT INTO salons (address, phone_number) VALUES
 ('г. Москва', '+70987654321'),
 ('г. Санкт-Петербург', '+71234567890');
 
--- CREATE OR REPLACE FUNCTION update_last_update_column()
--- RETURNS TRIGGER AS $$
--- BEGIN
---     NEW.last_update := NOW();
---     RETURN NEW;
--- END;
--- $$ LANGUAGE plpgsql;
+CREATE OR REPLACE FUNCTION update_last_update_column()
+RETURNS TRIGGER AS $$
+BEGIN
+    NEW.last_update := NOW();
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
 
--- CREATE TRIGGER set_last_update
--- BEFORE UPDATE ON appointments
--- FOR EACH ROW
--- EXECUTE FUNCTION update_last_update_column();
+CREATE TRIGGER set_last_update
+BEFORE UPDATE ON appointments
+FOR EACH ROW
+EXECUTE FUNCTION update_last_update_column();
