@@ -1,7 +1,9 @@
 package userStorage
 
 import (
+	"context"
 	"dog-service/models"
+	"dog-service/pubsub"
 	"fmt"
 )
 
@@ -19,5 +21,9 @@ func (s *UserStorage) SetUserData(data models.UserData) error {
 	if err != nil {
 		return fmt.Errorf("error while update user data: %s", err)
 	}
+
+	pubsub.Publish(context.Background(), "user_changed", data)
+
+	s.updateCache(data)
 	return nil
 }

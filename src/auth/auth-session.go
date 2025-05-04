@@ -2,11 +2,31 @@ package auth
 
 import (
 	"github.com/gorilla/sessions"
+	"github.com/boj/redistore"
 	"net/http"
 )
 
-var store = sessions.NewCookieStore([]byte("auth-key"))
 
+var store *redistore.RediStore
+
+func InitSessionStore() error {
+	var err error
+	store, err = redistore.NewRediStoreWithDB(
+		10,
+		"tcp",
+		"localhost:6379",
+		"",
+		"",
+		"0",
+		[]byte("auth-key"),
+	)
+	if err != nil {
+		return err
+	}
+	store.SetMaxAge(30 * 60) // 30 минут
+	store.SetKeyPrefix("session_")
+	return nil
+}
 func CreateSession(w http.ResponseWriter, r *http.Request, userID int64, role string) error {
 	session, _ := store.Get(r, "auth-session")
 	session.Values["userId"] = userID

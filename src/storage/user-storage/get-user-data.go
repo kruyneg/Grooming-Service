@@ -3,10 +3,18 @@ package userStorage
 import (
 	"dog-service/models"
 	"fmt"
+
 	"github.com/lib/pq"
 )
 
 func (s *UserStorage) GetUserData(id int64) (models.UserData, error) {
+	var user models.UserData
+	if ok := s.getFromCache(id, &user); ok {
+		var err error
+		user.Pets, err = s.getPets(id)
+		return user, err
+	}
+
 	row := s.db.QueryRow(
 		`SELECT
 			host.name, host.surname, host.midname,
@@ -49,5 +57,31 @@ func (s *UserStorage) GetUserData(id int64) (models.UserData, error) {
 		}
 	}
 
+	s.updateCache(user)
+
 	return res, nil
+}
+
+func (s *UserStorage) getPets(userID int64) ([]models.Pet, error) {
+	rows, err := s.db.Query(`
+		SELECT
+			id, name, breed, animal_type
+		FROM pets
+		WHERE host_id = $1
+	`, userID)
+	if err != nil {
+		return []models.Pet{}, err
+	}
+
+	var result []models.Pet
+	for rows.Next() {
+		var pet models.Pet
+		if err = rows.Scan(&pet.Id, &pet.Name, &pet.Breed, &pet.Animal);
+			err != nil {
+			return []models.Pet{}, err
+		}
+		result = append(result, pet)
+	}
+
+	return result, nil
 }

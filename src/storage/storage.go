@@ -22,7 +22,7 @@ type Storage struct {
 	authstorage.AuthStorage
 }
 
-func New(connstr string) (Storage, error) {
+func New(connstr string, cache userStorage.Cache) (Storage, error) {
 	db, err := sql.Open("postgres", connstr)
 	if err != nil {
 		return Storage{}, fmt.Errorf("error while init storage: %s", err)
@@ -33,7 +33,7 @@ func New(connstr string) (Storage, error) {
 	return Storage{
 		AppointmentStorage:  appointmentStorage.New(db),
 		SalonGroomerStorage: salonGroomerStorage.New(db),
-		UserStorage:         userStorage.New(db),
+		UserStorage:         userStorage.New(db, cache),
 		ServiceStorage:      serviceStorage.New(db),
 		ReviewStorage:       reviewstorage.New(db),
 		AuthStorage:         authstorage.New(db),

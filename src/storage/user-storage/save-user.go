@@ -1,7 +1,9 @@
 package userStorage
 
 import (
+	"context"
 	"dog-service/models"
+	"dog-service/pubsub"
 	"fmt"
 )
 
@@ -18,5 +20,11 @@ func (s *UserStorage) SaveUser(user models.UserData) (int64, error) {
 
 	var id int64
 	res.Scan(&id)
+
+	user.Id = id
+
+	pubsub.Publish(context.Background(), "new_user", user)
+
+	s.updateCache(user)
 	return id, nil
 }

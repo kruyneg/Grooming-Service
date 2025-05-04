@@ -1,7 +1,9 @@
 package appointmentstorage
 
 import (
+	"context"
 	"dog-service/models"
+	"dog-service/pubsub"
 	"fmt"
 )
 
@@ -20,5 +22,13 @@ func (s *AppointmentStorage) SaveAppointment(
 			fmt.Errorf("error while save appointment: %s", err)
 	}
 	id, _ := res.LastInsertId()
+	pubsub.Publish(context.Background(), "new_appointment",
+		map[string]any{
+			"id": appointment.Id,
+			"pet_id": appointment.Pet.Id,
+			"service_id": appointment.Service.Id,
+			"time": appointment.Time,
+			"status": appointment.Status,
+		})
 	return id, nil
 }
